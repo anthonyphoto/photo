@@ -2,28 +2,73 @@
 <html lang='en'>
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- <meta name="viewport" content="width=device-width"> -->
   	<meta name="description" content="Anthony Photography">
     <meta property="og:title" content="Anthony Photography">
-    <meta property="og:description" content="Anthony Photography">
+    <meta property="og:description" content="Philadelphia based Portraits and Events Photographer">
     <meta property="og:image" content="./img/thumb.jpg">
-    
     <title>Anthony Photography</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Julius+Sans+One&family=Tangerine&display=swap" rel="stylesheet">
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Tangerine&display=swap" rel="stylesheet"> -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
-    <!-- <link href="https://fonts.googleapis.com/css2?family=Babylonica&family=Caveat&display=swap" rel="stylesheet"> -->
     <link href="./css/index.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <header role='banner' id='js-slide-show' class='slide-show'>
-      <img id='js-img1' class='' src='./img/m1w.jpg' />
+    <header role='banner' id='js-slide-show' class='slide-show-wr'>
+      <img id='js-logo' class='intro' src='./img/logo-l.png' />
+      <img id='js-logo-top' class='logo-top fi' src='./img/logo-s.png' />
+      <img id='js-img-0' class='slide-show' />
+      <img id='js-img-1' class='slide-show' />
+      <div id='js-btn-gallery-wr' class='fi'>
+        <button id='js-btn-gallery' type="submit" onclick="handleOpenMenu()" class="btn-black fi-short btn-gallery">
+          <i class="fa fa-film fa-spin" style="font-size:1.1rem;"></i>&nbsp; PORTFOLIO
+        </button>
+      </div>
     </header>
-    <main role='main'>
-      content  
+    <main role='main' id='js-main'>
+      <div class='text-title flex'>
+        Every Moment, <br />
+        &nbsp;&nbsp;&nbsp;Artifully Preserved
+      </div>
+      <div class='flex desc'>
+        Based in Philadelphia<br />
+        anthony@anthonyspace.com
+      </div>
+
+      <!-- <div class='flex'>
+        <a href="./index.html"><img id='js-logo-menu' class='logo-menu' src='./img/logo-s-blk.png' /></a>
+      </div> -->
+      <div class='flex m-top-1'>
+        <a href="mailto:anthony@anthonyspace.com"><img class='logo-contact' src='./img/logo-email.png' /></a>
+        <a href="https://www.linkedin.com/in/myanthony/"><img class='logo-contact' src='./img/logo-linkedin.png' /></a>
+        <a href="https://www.instagram.com/anthony_philly/"><img class='logo-contact' src='./img/logo-insta.png' /></a>
+
+      </div>
+
+      <div class='m-top-3 flex fi-short'>
+        Choose a category
+        <!-- Please select the type of  photography -->
+        <!-- PLEASE SELECT THE CATEGORY -->
+      </div>
+      <div class='flex fi_short'>
+        <img src='./img/down-arrow.gif' class="down-arrow">
+      </div>  
+      <div class='flex m-top-1'>
+        PORTRAITS &nbsp; | &nbsp; EVENTS &nbsp; | &nbsp; OTHERS
+      </div>
+      <div id='js-pics' style="background-color: #fff;">
+
+      </div>
+
     </main>
-    <footer role='contentinfo' class='copy_right fi'>
+    <footer role='contentinfo' class='copyright fi'>
       © 2023 Anthony Photography
     </footer>
   </body>
