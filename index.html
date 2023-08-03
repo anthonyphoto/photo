@@ -14,16 +14,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link href="https://fonts.googleapis.com/css2?family=Julius+Sans+One&family=Tangerine&display=swap" rel="stylesheet">
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Julius+Sans+One&family=Tangerine&display=swap" rel="stylesheet"> -->
     <!-- <link href="https://fonts.googleapis.com/css2?family=Tangerine&display=swap" rel="stylesheet"> -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
     <link href="./css/index.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" href="./img/favi.png" type="image/x-icon"/>
   </head>
   <body>
     <header role='banner' id='js-slide-show' class='slide-show-wr'>
       <img id='js-logo' class='intro' src='./img/logo-l.png' />
-      <img id='js-logo-top' class='logo-top fi' src='./img/logo-s.png' />
+      <a href="./index.html">
+        <img id='js-logo-top' class='logo-top fi' src='./img/logo-s.png' />
+      </a>
       <img id='js-img-0' class='slide-show' />
       <img id='js-img-1' class='slide-show' />
       <div id='js-btn-gallery-wr' class='fi'>
@@ -33,34 +35,50 @@
       </div>
     </header>
     <main role='main' id='js-main'>
-      <div class='text-title flex'>
-        Every Moment, <br />
-        &nbsp;&nbsp;&nbsp;Artifully Preserved
+      <div class='top-band'>
+        <div class='back-link' onClick="resumeSlideShow()">
+          &lt; Back to Slide Show
+        </div>
+        <!-- <img onClick="renderLanding(true);" class='logo-band' src='./img/logo-s-white.png' /> -->
       </div>
-      <div class='flex desc'>
-        Based in Philadelphia<br />
-        anthony@anthonyspace.com
-      </div>
-
-      <!-- <div class='flex'>
-        <a href="./index.html"><img id='js-logo-menu' class='logo-menu' src='./img/logo-s-blk.png' /></a>
+      <!-- <div class=''>
+        <a href="./index.html">
+          <img id='js-logo-menu' class='logo-menu' src='./img/logo-s-blk.png' />
+        </a>
       </div> -->
-      <div class='flex m-top-1'>
-        <a href="mailto:anthony@anthonyspace.com"><img class='logo-contact' src='./img/logo-email.png' /></a>
-        <a href="https://www.linkedin.com/in/myanthony/"><img class='logo-contact' src='./img/logo-linkedin.png' /></a>
+      <div id='js-catch-wr' class='text-title fi'>
+        <span class='span-l'>Essence</span> <span class='span-m'>of Memories</span>
+      </div>
+
+      <div class='desc fi-short'>
+        <span>Based in Philadelphia</span><br />
+        <a href="mailto:anthony@anthonyspace.com">
+          anthony@anthonyspace.com
+        </a>
+        
+      </div>
+      <div class='flex m-top-1 fi-short'>
+        <a href="mailto:anthony@anthonyspace.com">
+          <img class='logo-contact' src='./img/logo-email.png' />
+        </a>
+        <a href="https://www.linkedin.com/in/myanthony/">
+          <img class='logo-contact' src='./img/logo-linkedin.png' />
+        </a>
         <a href="https://www.instagram.com/anthony_philly/"><img class='logo-contact' src='./img/logo-insta.png' /></a>
-
       </div>
-
-      <div class='m-top-3 flex fi-short'>
+      <!-- <div class='m-top-3 flex fi-short'>
+        <a href="./index.html">
+          <img id='js-logo-main' class='logo-main' src='./img/logo-s-blk.png' />
+        </a>
+      </div> -->
+      <!-- <div class='m-top-3 flex fi-short'>
         Choose a category
-        <!-- Please select the type of  photography -->
-        <!-- PLEASE SELECT THE CATEGORY -->
-      </div>
+      </div> 
       <div class='flex fi_short'>
         <img src='./img/down-arrow.gif' class="down-arrow">
       </div>  
-      <div class='flex m-top-1'>
+      -->
+      <div class='flex menu fi-short'>
         PORTRAITS &nbsp; | &nbsp; EVENTS &nbsp; | &nbsp; OTHERS
       </div>
       <div id='js-pics' style="background-color: #fff;">
@@ -72,5 +90,8 @@
       © 2023 Anthony Photography
     </footer>
   </body>
-  <script type="text/javascript" src="./js/index.js"></script>
+  <script type="text/javascript" src="./js/utils.js"></script>
+  <script type="text/javascript" src="./js/event-handler.js"></script>
+  <script type="text/javascript" src="./js/data.js"></script>
+  <script type="text/javascript" src="./js/render.js"></script>
 </html>
