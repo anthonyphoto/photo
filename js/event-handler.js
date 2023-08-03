@@ -5,6 +5,7 @@ const handleOpenMenu = () => {
   SHOULD_STOP_SHOW = true;
   const mainEl = document.getElementById('js-main');
   mainEl.style.display = 'block';
+  renderCatchPhrase('portraits');
   updateCatchMobile();
 
   scrollMain(mainEl);

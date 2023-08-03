@@ -34,10 +34,11 @@ const throttle = (fn, ms) => {
 const isElementInViewport = element => {
   const rect = element.getBoundingClientRect();
   const screenHeight = getHeight();
+  // console.log("AK: rec", rect.height, element)
   // console.log("AK: rec", rect.top, rect.bottom, element)
 
   // make sure to check height to ensure images are fully loaded
-  return (rect.height > 0 && rect.top >= -50 && rect.top <= screenHeight * 0.80);
+  return (rect.height > 100 && rect.top >= -50 && rect.top <= screenHeight * 0.80);
 }
 
 // Function to reveal hidden content when it's in the viewport

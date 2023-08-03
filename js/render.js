@@ -3,7 +3,6 @@
 let IS_LANDSCAPE = false;
 let SHOULD_STOP_SHOW = false;
 let SHOW_RUNNING = false;
-// let IS_SLIDE_RUNNING = false;
 
 const resumeSlideShow = () => {
   document.title = 'Anthony Photography';
@@ -20,6 +19,57 @@ const updateCatchMobile = () => {
   }
 }
 
+const renderCatchPhrase = page => {
+  const portraitsEl = document.getElementById('js-catch-portraits');
+  const eventsEl = document.getElementById('js-catch-events');
+  if (page === 'portraits') {
+    eventsEl.style.display = 'none';
+    portraitsEl.style.display = 'block';
+  } else {
+    portraitsEl.style.display = 'none';
+    eventsEl.style.display = 'block';
+  }
+}
+
+const renderPics = page => {
+  let picLib = PORTRAITS_LIB;
+
+  switch (page) {
+    case 'events' : 
+      picLib = EVENTS_LIB;
+      break;
+    case 'others' :
+      picLib = OTHERS_LIB;
+      break;
+  }
+
+  const picsEl = document.getElementById('js-pics');
+  picsEl.innerHTML = '';
+
+  picLib.forEach(pic => {
+    const wrEl = document.createElement('div');
+    wrEl.setAttribute('class', 'pic-wr hidden-content');
+    let picHtml = `<img class='pic' src='${pic.src}${IS_LANDSCAPE ? 'w' : ''}.jpg' />`;
+
+    if (pic?.title?.length > 0) {
+      picHtml += `<span class='pic-text'>${pic.title}</span>`
+    }
+    wrEl.innerHTML = picHtml;
+    picsEl.appendChild(wrEl);
+  });
+
+}
+
+const updateMenu = page => {
+  document.querySelectorAll('.menu').forEach(el => {
+    if (el.id === `js-${page}`) {
+      el.style.color = '#c00000';
+    } else {
+      el.style.color = '#2a2c2d';
+    }
+  });
+}
+
 const renderMain = (page = 'portraits') => {
   window.removeEventListener('scroll', throttle(revealContentOnScroll, 100));
   document.title = `Anthony Photography - ${page}`;
@@ -30,16 +80,9 @@ const renderMain = (page = 'portraits') => {
   mainEl.style.top = 0;
 
   updateCatchMobile();
-
-  const picsEl = document.getElementById('js-pics');
-  picsEl.innerHTML = '';
-
-  PORTRAITS_LIB.forEach(pic => {
-    const el = document.createElement('img');
-    el.setAttribute('class', 'pic hidden-content');
-    el.setAttribute('src', `${pic.src}${IS_LANDSCAPE ? 'w' : ''}.jpg`);
-    picsEl.appendChild(el);
-  });
+  renderCatchPhrase(page);
+  updateMenu(page);
+  renderPics(page);
 
   // second try to ensure additional images are loaded
   setTimeout(revealContentOnScroll, 1000)
@@ -200,10 +243,7 @@ const renderLanding = (skipIntro = false) => {
   // const startImage = Math.random() > 0.5 ? './img/m3' : './img/m1';
   const slideInd = skipIntro ? 0 : SLIDE_LIST.findIndex(slide => slide.src === startImage);
 
-  console.log("AK: RUNNING? SHOULD_STOP", SHOW_RUNNING, SHOULD_STOP_SHOW);
-  // if (SHOW_STOP_FORCED || !skipIntro) {
   if (!SHOW_RUNNING) {
-    console.log("****AK: RUN, RUNNGING?, skipIntro", SHOW_RUNNING, skipIntro)
     playSlideShow(slideInd, !skipIntro);
   } 
 }

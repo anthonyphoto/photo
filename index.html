@@ -41,13 +41,18 @@
         </div>
         <!-- <img onClick="renderLanding(true);" class='logo-band' src='./img/logo-s-white.png' /> -->
       </div>
-      <!-- <div class=''>
-        <a href="./index.html">
-          <img id='js-logo-menu' class='logo-menu' src='./img/logo-s-blk.png' />
-        </a>
-      </div> -->
-      <div id='js-catch-wr' class='text-title fi'>
-        <span class='span-l'>Essence</span> <span class='span-m'>of Memories</span>
+      <div id='js-catch-wr' class='text-title'>
+        <div id='js-catch-portraits' style='display:none;'>
+          <span class='span-l fi-short'>Portraits</span>
+          <span class='nowrap fi'>
+            <span class='span-s'>of</span> 
+            <span class='span-m'>Life</span>
+          </span>
+        </div>
+        <div id='js-catch-events' style='display:none;'>
+          <span class='span-l fi-short'>Essence</span> 
+          <span class='span-s fi'>of Memories</span>
+        </div>
       </div>
 
       <div class='desc fi-short'>
@@ -66,6 +71,21 @@
         </a>
         <a href="https://www.instagram.com/anthony_philly/"><img class='logo-contact' src='./img/logo-insta.png' /></a>
       </div>
+      <div class='flex menu-wr fi-short'>
+        <span id='js-portraits' onClick='renderMain("portraits")' class='menu'>
+          PORTRAITS
+        </span> 
+        <span>&nbsp; | &nbsp;</span> 
+        <span id='js-events' onClick='renderMain("events")' class='menu'>
+          EVENTS
+        </span> 
+        <span>&nbsp; | &nbsp;</span> 
+        <span id='js-others' onClick='renderMain("others")' class='menu'>
+          OTHERS
+        </span> 
+      </div>
+      <div id='js-pics' class='pics-wr' style="background-color: #fff;"></div>
+
       <!-- <div class='m-top-3 flex fi-short'>
         <a href="./index.html">
           <img id='js-logo-main' class='logo-main' src='./img/logo-s-blk.png' />
@@ -78,12 +98,6 @@
         <img src='./img/down-arrow.gif' class="down-arrow">
       </div>  
       -->
-      <div class='flex menu fi-short'>
-        PORTRAITS &nbsp; | &nbsp; EVENTS &nbsp; | &nbsp; OTHERS
-      </div>
-      <div id='js-pics' style="background-color: #fff;">
-
-      </div>
 
     </main>
     <footer role='contentinfo' class='copyright fi'>

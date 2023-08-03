@@ -48,38 +48,51 @@ const SLIDE_LIST = [
   }, 
 ];
 
-// stored in object in case additional attributes needed
+/*
+ * stored in object in case additional attributes needed
+ * portraitOnly: non-mobile will display as portrait
+ * title: text will display under the picture
+ * 
+ */
 const PORTRAITS_LIB = [
   {
     src: './img/m1',
+    portraitOnly: false,
     title: '',
   },
   {
     src: './img/m3',
+    portraitOnly: false,
     title: '',
   },
   {
     src: './img/m4',
+    portraitOnly: false,
     title: '',
   },
   {
     src: './img/m5',
+    portraitOnly: false,
     title: '',
   },
   {
     src: './img/m6',
+    portraitOnly: false,
     title: '',
   },
   {
     src: './img/m8',
+    portraitOnly: false,
     title: '',
   },
   {
     src: './img/m10',
+    portraitOnly: false,
     title: '',
   },
   {
     src: './img/m11',
+    portraitOnly: false,
     title: '',
   },
 ];
@@ -87,39 +100,45 @@ const PORTRAITS_LIB = [
 const EVENTS_LIB = [
   {
     src: './img/m2',
+    portraitOnly: false,
     title: '',
   },
   {
     src: './img/m4',
+    portraitOnly: false,
     title: '',
   },
   {
     src: './img/m6',
+    portraitOnly: false,
     title: '',
   },
   {
     src: './img/m7',
+    portraitOnly: false,
     title: '',
   },
-
-
 ];
 
 const OTHERS_LIB = [
   {
     src: './img/m12',
-    title: '',
+    portraitOnly: false,
+    title: 'Kerry Park, Seattle',
   },
   {
     src: './img/m9',
+    portraitOnly: false,
     title: '',
   },
   {
     src: './img/m4',
+    portraitOnly: false,
     title: '',
   },
   {
     src: './img/m13',
-    title: '',
+    portraitOnly: false,
+    title: 'Golden Gate Bridge, San Francisco',
   },
 ];
