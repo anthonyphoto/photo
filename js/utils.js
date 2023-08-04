@@ -21,7 +21,10 @@ const throttle = (fn, ms) => {
   let run = true;
 
   return (...args) => {
-    if (!run) return;
+    if (!run) {
+      // console.log("--throttled", TICK++)
+      return;
+    }
     fn(...args);
     run = false;
     setTimeout(() => {
@@ -34,8 +37,6 @@ const throttle = (fn, ms) => {
 const isElementInViewport = element => {
   const rect = element.getBoundingClientRect();
   const screenHeight = getHeight();
-  // console.log("AK: rec", rect.height, element)
-  // console.log("AK: rec", rect.top, rect.bottom, element)
 
   // make sure to check height to ensure images are fully loaded
   return (rect.height > 100 && rect.top >= -50 && rect.top <= screenHeight * 0.80);
@@ -50,4 +51,23 @@ const revealContentOnScroll = () => {
       content.style.transform = 'translateY(0)';
     }
   });
+}
+
+/*
+ * el: htmlElment
+ * delay: ms each recursion
+ * opacity: initial opacity (= 1)
+ * delta: opacity decrease rate (= 0.1)
+ * issue??: what if element already has opacity set?
+ */
+const fadeOut = (el, delay=100, opacity = 1, delta = 0.1) => {
+  if (opacity <= 0) {
+    el.style.display = 'none';
+    return;
+  }
+
+  setTimeout(() => {
+    el.style.opacity = opacity;
+    fadeOut(el, delay, opacity - delta, delta);
+  }, delay)
 }

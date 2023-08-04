@@ -1,8 +1,19 @@
 'use strict';
 
+// animation constants
+const START_FRAME = 1; // should be always 1
+const END_FRAME = 259;
+// const END_FRAME = 113;
+
+let TICK = 0; // performance test purpose
+
+let PAGE = 'home';
+const MENU_NAMES = ['portraits', 'events', 'others'];
 let IS_LANDSCAPE = false;
 let SHOULD_STOP_SHOW = false;
 let SHOW_RUNNING = false;
+let SCROLL_EVENT_RUNNING = false;
+let FRAMES_LOADED = false;
 
 const resumeSlideShow = () => {
   document.title = 'Anthony Photography';
@@ -20,15 +31,9 @@ const updateCatchMobile = () => {
 }
 
 const renderCatchPhrase = page => {
-  const portraitsEl = document.getElementById('js-catch-portraits');
-  const eventsEl = document.getElementById('js-catch-events');
-  if (page === 'portraits') {
-    eventsEl.style.display = 'none';
-    portraitsEl.style.display = 'block';
-  } else {
-    portraitsEl.style.display = 'none';
-    eventsEl.style.display = 'block';
-  }
+  MENU_NAMES.forEach(name => {
+    document.getElementById(`js-catch-${name}`).style.display = page === name ? 'block' : 'none';
+  });
 }
 
 const renderPics = page => {
@@ -60,39 +65,132 @@ const renderPics = page => {
 
 }
 
-const updateMenu = page => {
-  document.querySelectorAll('.menu').forEach(el => {
-    if (el.id === `js-${page}`) {
-      el.style.color = '#c00000';
-    } else {
-      el.style.color = '#2a2c2d';
-    }
-  });
+// display only the target index frame
+const updateAnimeFrames = (ind) => {
+  document.getElementById(`js-f-${ind}`).style.opacity = 1;
+
+  for (let i = ind + 1; i <= END_FRAME; i++) {
+    document.getElementById(`js-f-${i}`).style.opacity = 0;
+  }
+}
+
+const loadAnimeFrames = addImageLoadEvent => { 
+  const frameEl = document.getElementById('js-frame-wr');
+  let imgHtml = '';
+  for (let i = START_FRAME; i <= END_FRAME; i++) {
+    const imgEl = document.createElement('img');
+    imgEl.setAttribute('class', IS_LANDSCAPE ? 'frame-wide' : 'frame');
+    imgEl.setAttribute('id', `js-f-${i}`)
+    imgEl.style.zIndex = i;
+    imgEl.style.opacity = i === START_FRAME ? 1 : 0;
+    imgEl.src = `./img/frame/f-${i}.jpg`;
+
+    frameEl.appendChild(imgEl);
+  }
+  const status = addImageLoadEvent(IS_LANDSCAPE ? 'frame-wide' : 'frame');
+
+}
+
+const displayLoader = () => {
+  if (FRAMES_LOADED) {
+    // document.getElementById('js-section-loader').style.display = 'none';
+    fadeOut(document.getElementById('js-section-loader'), 20);
+    return;
+  }
+
+  document.getElementById('js-section-loader').style.display = 'flex';
+
+  setTimeout(() => {
+    displayLoader();
+  }, 1000);
 }
 
 const renderMain = (page = 'portraits') => {
-  window.removeEventListener('scroll', throttle(revealContentOnScroll, 100));
+  PAGE = page;
   document.title = `Anthony Photography - ${page}`;
   history.pushState({ page: page }, '', `?p=${page}`);
   
+  if (page === 'portraits' && !FRAMES_LOADED) displayLoader();
+
   const mainEl = document.getElementById('js-main');
   mainEl.style.display = 'block';
   mainEl.style.top = 0;
 
   updateCatchMobile();
   renderCatchPhrase(page);
-  updateMenu(page);
+  
+  //updateMenu
+  document.querySelectorAll('.menu').forEach(el => {
+    el.style.color = el.id === `js-${page}` ? '#c00000' : '#2a2c2d';
+  });
+
+  // main frame setting
+  const frame1 = document.getElementById('js-frame-wr');
+  const frame2 = document.getElementById('js-frame-e-wr');
+  if (page === 'portraits') {
+    frame2.style.display = 'none';
+    frame1.style.display = 'block';
+    const suffix = IS_LANDSCAPE ? '-wide' : '';
+
+    frame1.classList.remove(IS_LANDSCAPE ? 'frame-wr' : 'frame-wr-wide');
+    frame1.classList.add(`frame-wr${suffix}`);
+    
+    if (!IS_LANDSCAPE) {
+      const maxHeight = getWidth() * 675 / 1200;
+      const height = maxHeight > 300 ? maxHeight : 300;
+      frame1.style.height = `${height}px`;
+      document.querySelectorAll('.frame, .frame-wide').forEach(el => {
+        el.classList.remove('frame-wide');
+        el.classList.add('frame');
+        el.style.height = `${height}px`;
+      });
+
+    } else {
+      frame1.style.height = '';      
+      document.querySelectorAll('.frame, .frame-wide').forEach(el => { 
+        el.style.height = '';
+        el.classList.remove('frame');
+        el.classList.add('frame-wide');
+      });
+
+    }
+  } else {
+    frame1.style.display = 'none';
+    frame2.style.display = 'block';
+    const suffix = IS_LANDSCAPE ? '-wide' : '';
+
+    frame2.classList.remove(IS_LANDSCAPE ? 'frame-e-wr' : 'frame-e-wr-wide')
+    frame2.classList.add(`frame-e-wr${suffix}`);
+    frame2.innerHTML = `<img id='js-frame-e' class='frame-e${suffix}' src='./img/o_seattle.jpg' />`;
+    
+    
+    const img2 = document.getElementById('js-frame-e');
+    if (!IS_LANDSCAPE) {
+      const maxHeight = getWidth() * 840 / 1400;
+      const height = maxHeight > 400 ? maxHeight : 400;
+      frame2.style.height = `${height}px`
+      img2.style.height = `${height}px`
+    } else {
+      frame2.style.height = '';
+      img2.style.height = '';
+    }
+  }
   renderPics(page);
 
   // second try to ensure additional images are loaded
-  setTimeout(revealContentOnScroll, 1000)
+  // setTimeout(revealContentOnScroll, 1000)
 
-  addScrollEvent();
+  if (!SCROLL_EVENT_RUNNING) {
+    addScrollEvent();
+    SCROLL_EVENT_RUNNING = true;
+  }
+
 }
 
 const scrollMain = (el, top=100, bounce=9, delta = -1) => {
   if (top < 0 && bounce < 0) {
     renderMain();
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
     revealContentOnScroll();
     return;
@@ -142,7 +240,7 @@ const playSlideShow = (slideInd, isFirst, toggleId = 0) => {
   }, duration);
 }
 
-const fadeOut = (el, opacity) => {
+const fadeOutIntro = (el, opacity) => {
   if (opacity <= 0) {
     document.getElementById('js-logo-top').style.display = 'block';
     el.style.display = 'none';
@@ -152,14 +250,14 @@ const fadeOut = (el, opacity) => {
   }
   setTimeout(() => {
     el.style.opacity = opacity;
-    fadeOut(el, opacity - 0.1);
+    fadeOutIntro(el, opacity - 0.1);
   }, 40)
 }
 
 const shrink = (el, width, logoWidth, logoHeight, screenWidth, screenHeight, finalWidth) => {
   if (width < finalWidth) {
     return setTimeout(() => {
-      fadeOut(el, 1);      
+      fadeOutIntro(el, 1);      
       return;
     }, 3000)
   }
@@ -216,9 +314,8 @@ const displayIntro = async () => {
 }
 
 const renderLanding = (skipIntro = false) => {
-  removeScrollEvent();  // scroll not applied in landing
-
   SHOULD_STOP_SHOW = false;
+  PAGE = 'home';
   document.getElementById('js-main').style.display = 'none';
   
   SLIDE_LIST.sort((a, b) => {
@@ -255,13 +352,14 @@ const main = () => {
   const param = window.location.search.split(/=/);
   const id = param.length === 2 ? param[1] : '';
   handleEvent();
+  const addImageLoadEvent = addClassLoadEvent();
+  loadAnimeFrames(addImageLoadEvent); // initially load the frame images
 
-  if (id !== 'portraits' && id !== 'events' && id !== 'others') {
+  if (MENU_NAMES.every(name => id !== name)) {
     document.title = 'Anthony Photography';
     history.pushState({ page: 'home' }, '', '');
     renderLanding();
   } else {
-    // document.getElementById('js-main').classList.add('fi');
     renderMain(id);
   }
 }

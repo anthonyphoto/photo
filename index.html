@@ -18,6 +18,7 @@
     <!-- <link href="https://fonts.googleapis.com/css2?family=Tangerine&display=swap" rel="stylesheet"> -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
     <link href="./css/index.css" rel="stylesheet" type="text/css" />
+    <link href="./css/common.css" rel="stylesheet" type="text/css" />
     <link rel="icon" href="./img/favi.png" type="image/x-icon"/>
   </head>
   <body>
@@ -28,7 +29,7 @@
       </a>
       <img id='js-img-0' class='slide-show' />
       <img id='js-img-1' class='slide-show' />
-      <div id='js-btn-gallery-wr' class='fi'>
+      <div id='js-btn-gallery-wr' class='fi hidden'>
         <button id='js-btn-gallery' type="submit" onclick="handleOpenMenu()" class="btn-black fi-short btn-gallery">
           <i class="fa fa-film fa-spin" style="font-size:1.1rem;"></i>&nbsp; PORTFOLIO
         </button>
@@ -53,6 +54,13 @@
           <span class='span-l fi-short'>Essence</span> 
           <span class='span-s fi'>of Memories</span>
         </div>
+        <div id='js-catch-others' style='display:none;'>
+          <span class='span-l fi-short'>Through</span>
+          <span class='nowrap fi'>
+            <span class='span-s'>the</span> 
+            <span class='span-m'>Lens</span>
+          </span>
+        </div>
       </div>
 
       <div class='desc fi-short'>
@@ -72,18 +80,30 @@
         <a href="https://www.instagram.com/anthony_philly/"><img class='logo-contact' src='./img/logo-insta.png' /></a>
       </div>
       <div class='flex menu-wr fi-short'>
-        <span id='js-portraits' onClick='renderMain("portraits")' class='menu'>
+        <span id='js-portraits' onClick='handleMenuClicked("portraits")' class='menu'>
           PORTRAITS
         </span> 
         <span>&nbsp; | &nbsp;</span> 
-        <span id='js-events' onClick='renderMain("events")' class='menu'>
+        <span id='js-events' onClick='handleMenuClicked("events")' class='menu'>
           EVENTS
         </span> 
         <span>&nbsp; | &nbsp;</span> 
-        <span id='js-others' onClick='renderMain("others")' class='menu'>
+        <span id='js-others' onClick='handleMenuClicked("others")' class='menu'>
           OTHERS
         </span> 
       </div>
+      <!-- <div class='empty-block'></div> -->
+
+      <div class='m-top-2'> </div>
+
+      <div id='js-frame-wr' class='fi-short hidden'>
+        <div id='js-section-loader' class='section-loader'>
+            <img src='./img/loading-1.gif' style='height: 60%' /><br />
+            <span class='section-loader-text'>Frames are being loaded now...</span>
+        </div>
+      </div>
+      <div id='js-frame-e-wr' class='fi-short hidden'></div>
+
       <div id='js-pics' class='pics-wr' style="background-color: #fff;"></div>
 
       <!-- <div class='m-top-3 flex fi-short'>
@@ -98,8 +118,15 @@
         <img src='./img/down-arrow.gif' class="down-arrow">
       </div>  
       -->
-
     </main>
+    <div id='js-top-btn-wr' class='top-btn-wr fi-short'>
+      <img src='./img/top-btn.svg' class='top-btn' onClick='scrollToTop()'>
+    </div>
+    <div id='js-loader' class='loader-wr'>
+        <img src='./img/loading-1.gif' class='loader' />
+        <span class='loader-text'>Portfolio images are being loaded now...</span>
+        <img class='logo-main loader-logo' src='./img/logo-s-blk.png' />
+    </div>
     <footer role='contentinfo' class='copyright fi'>
       © 2023 Anthony Photography
     </footer>
