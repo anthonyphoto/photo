@@ -8,6 +8,10 @@
   align-items: center;
 }
 
+.bg-white {
+  background-color: #FFF;
+}
+
 .m-top-1 {
   margin-top: 1rem;
 }

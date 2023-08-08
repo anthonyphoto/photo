@@ -16,6 +16,7 @@ let SCROLL_EVENT_RUNNING = false;
 let FRAMES_LOADED = false;
 
 const resumeSlideShow = () => {
+  document.getElementById('js-slide-show').style.opacity = 1;
   document.title = 'Anthony Photography';
   history.replaceState({ page: 'home' }, '', './index.html');
   renderLanding(SHOULD_STOP_SHOW);
@@ -36,6 +37,25 @@ const renderCatchPhrase = page => {
   });
 }
 
+const getPicHtml = (pic, suppressHidden = false) => {
+  const className = IS_LANDSCAPE && pic?.mode === 2? 'pic-portrait' : 'pic'; 
+  const imgSrc = `${pic.src}${IS_LANDSCAPE && pic?.mode === 0 ? 'w' : ''}.jpg`;
+
+  const wrEl = document.createElement('div');
+  wrEl.classList.add('pic-wr');
+  if (!suppressHidden) {
+    wrEl.classList.add('hidden-content');
+  }
+  // wrEl.setAttribute('class', 'pic-wr hidden-content');
+  let picHtml = `<img class=${className} src='${imgSrc}' />`;
+
+  if (pic?.title?.length > 0) {
+    picHtml += `<span class='pic-text'>${pic.title}</span>`
+  }
+  wrEl.innerHTML = picHtml;
+  return wrEl;
+}
+
 const renderPics = page => {
   let picLib = PORTRAITS_LIB;
 
@@ -49,19 +69,8 @@ const renderPics = page => {
   }
 
   const picsEl = document.getElementById('js-pics');
-  picsEl.innerHTML = '';
-
-  picLib.forEach(pic => {
-    const wrEl = document.createElement('div');
-    wrEl.setAttribute('class', 'pic-wr hidden-content');
-    let picHtml = `<img class='pic' src='${pic.src}${IS_LANDSCAPE ? 'w' : ''}.jpg' />`;
-
-    if (pic?.title?.length > 0) {
-      picHtml += `<span class='pic-text'>${pic.title}</span>`
-    }
-    wrEl.innerHTML = picHtml;
-    picsEl.appendChild(wrEl);
-  });
+  picsEl.innerHTML = '';  
+  picLib.forEach(pic => picsEl.appendChild(getPicHtml(pic)));
 
 }
 
@@ -108,13 +117,17 @@ const displayLoader = () => {
 const renderMain = (page = 'portraits') => {
   PAGE = page;
   document.title = `Anthony Photography - ${page}`;
-  history.pushState({ page: page }, '', `?p=${page}`);
+
+  // disable pushstate
+  // history.pushState({ page: page }, '', `?p=${page}`);
   
   if (page === 'portraits' && !FRAMES_LOADED) displayLoader();
 
   const mainEl = document.getElementById('js-main');
   mainEl.style.display = 'block';
   mainEl.style.top = 0;
+
+  document.getElementById('js-slide-show').style.opacity = 0;
 
   updateCatchMobile();
   renderCatchPhrase(page);
@@ -124,9 +137,28 @@ const renderMain = (page = 'portraits') => {
     el.style.color = el.id === `js-${page}` ? '#c00000' : '#2a2c2d';
   });
 
+  // top image for portraits menu only
+  /*
+  const topEl = document.getElementById('js-top-portrait');
+  if (page === 'portraits') {
+    const pic = {
+      src: './img/p_michael',
+      mode: 0,
+      title: '',
+    };
+    topEl.style.display = 'block';
+    topEl.innerHTML = '';
+    topEl.appendChild(getPicHtml(pic, true));
+    topEl.style.paddingBottom = '1rem';
+  } else {
+    topEl.style.display = 'none';
+  }
+  */
+
   // main frame setting
   const frame1 = document.getElementById('js-frame-wr');
   const frame2 = document.getElementById('js-frame-e-wr');
+  const frameTitle = document.getElementById('js-top-pic-title');
   if (page === 'portraits') {
     frame2.style.display = 'none';
     frame1.style.display = 'block';
@@ -152,16 +184,20 @@ const renderMain = (page = 'portraits') => {
         el.classList.remove('frame');
         el.classList.add('frame-wide');
       });
-
     }
+    // frameTitle.innerHTML = 'Pose & Play';
+
   } else {
     frame1.style.display = 'none';
     frame2.style.display = 'block';
     const suffix = IS_LANDSCAPE ? '-wide' : '';
 
+    const imgSrc = page === 'events' ? './img/e_title2.jpg' : './img/o_title3.jpg';
+    const imgTitle = page === 'events' ? '' : '';
+
     frame2.classList.remove(IS_LANDSCAPE ? 'frame-e-wr' : 'frame-e-wr-wide')
     frame2.classList.add(`frame-e-wr${suffix}`);
-    frame2.innerHTML = `<img id='js-frame-e' class='frame-e${suffix}' src='./img/o_seattle.jpg' />`;
+    frame2.innerHTML = `<img id='js-frame-e' class='frame-e${suffix}' src='${imgSrc}'' />`;
     
     
     const img2 = document.getElementById('js-frame-e');
@@ -174,7 +210,10 @@ const renderMain = (page = 'portraits') => {
       frame2.style.height = '';
       img2.style.height = '';
     }
+
+    frameTitle.innerHTML = imgTitle;
   }
+
   renderPics(page);
 
   // second try to ensure additional images are loaded
@@ -228,10 +267,16 @@ const playSlideShow = (slideInd, isFirst, toggleId = 0) => {
   const duration = isFirst ? 8000 : 5000;
   const imgElement = document.getElementById(`js-img-${toggleId}`);
   imgElement.style.opacity = 0;
-  imgElement.src = `${SLIDE_LIST[slideInd].src}${IS_LANDSCAPE ? 'w' : ''}.jpg`;
+
+  const imgSrc = SLIDE_LIST[slideInd].src;
+  // const imgSrc = isFirst ? SLIDE_LANDING : SLIDE_LIST[slideInd].src;
+  imgElement.src = `${imgSrc}${IS_LANDSCAPE ? 'w' : ''}.jpg`;
   imgElement.style.zIndex = -1;
-  
-  fadeIn(imgElement);
+  if (isFirst){
+    imgElement.style.opacity = 1;
+  } else {
+    fadeIn(imgElement);
+  }
 
   setTimeout(() => {
     imgElement.style.zIndex = -2;
@@ -266,8 +311,8 @@ const shrink = (el, width, logoWidth, logoHeight, screenWidth, screenHeight, fin
 
   const height = logoHeight * width / logoWidth;
   el.style.width = `${width}px`;
-  el.style.left = `${screenWidth/2 - width/2}px`;
-  el.style.top = `${screenHeight/2 - height*0.5}px`;
+  el.style.left = `${screenWidth/2 - width/2 - 12}px`;
+  el.style.top = `${screenHeight/2 - height/2 - 128}px`;
   
   const delta = width > screenWidth * 1.5 ? width / screenWidth * 4 : 2;
 
@@ -277,6 +322,7 @@ const shrink = (el, width, logoWidth, logoHeight, screenWidth, screenHeight, fin
 }
 
 const scrollLogo = (el, left, finalLeft) => {
+  const scrollSpeed = IS_LANDSCAPE ? 1.5 : 5;
   return new Promise(resolve => {
     if (left <= finalLeft) {
       document.getElementById('js-btn-gallery-wr').style.display = 'block';
@@ -284,7 +330,7 @@ const scrollLogo = (el, left, finalLeft) => {
     }
     setTimeout(() => {
       el.style.left = `${left}px`;
-      scrollLogo(el, left - 1.5, finalLeft)
+      scrollLogo(el, left - scrollSpeed, finalLeft)
         .then(resolve);
     }, 1);
   });
@@ -293,21 +339,25 @@ const scrollLogo = (el, left, finalLeft) => {
 const displayIntro = async () => {
   const logoElem = document.getElementById('js-logo');
   logoElem.style.display = 'block';
-  const logoWidth = logoElem.naturalWidth;
-  const logoHeight = logoElem.naturalHeight;
+  // Hardcoded to fix racing condition issue
+  const logoWidth = 15800;
+  const logoHeight = 1826;
+  // const logoWidth = logoElem.naturalWidth;  // 15800px
+  // const logoHeight = logoElem.naturalHeight;  // 1826px
+  
   const screenWidth = getWidth();
   const screenHeight = getHeight();
 
   const finalWidth = IS_LANDSCAPE ? screenWidth * 0.8 : screenWidth * 0.96;
   // width & height have value to resize
-  let width = IS_LANDSCAPE ? screenHeight * 20 : screenWidth * 50;
+  let width = IS_LANDSCAPE ? screenHeight * 20 : screenWidth * 300;
   let height = logoHeight * width / logoWidth;
   const finalLeft = screenWidth/2 - width/2;
   logoElem.style.width = `${width}px`;
   logoElem.style.left = `0px`;
   logoElem.style.top = `${screenHeight/2 - height*0.5}px`;
   
-  await scrollLogo(logoElem, finalLeft * 0.93, finalLeft);
+  await scrollLogo(logoElem, finalLeft * (IS_LANDSCAPE ? 0.93 : 0.98), finalLeft);
 
   setTimeout(() => shrink(logoElem, width, logoWidth, logoHeight, screenWidth, screenHeight, finalWidth), 100
   );
@@ -336,8 +386,8 @@ const renderLanding = (skipIntro = false) => {
   }
 
   // set the first image during intro
-  const startImage = './img/m1';
-  // const startImage = Math.random() > 0.5 ? './img/m3' : './img/m1';
+  const startImage = './img/t_mj';
+  // const startImage = Math.random() > 0.5 ? './img/t_mj' : './img/m9';
   const slideInd = skipIntro ? 0 : SLIDE_LIST.findIndex(slide => slide.src === startImage);
 
   if (!SHOW_RUNNING) {
@@ -349,12 +399,16 @@ const main = () => {
   IS_LANDSCAPE = isLandscape();
   document.documentElement.style.fontSize = IS_LANDSCAPE ? '20px' : '16px'; 
 
+  const screenWidth = getWidth();
+  if (screenWidth > 2000) {
+    document.documentElement.style.setProperty('--max-width', '1400px');
+    document.documentElement.style.setProperty('--portrait-width', '900px');
+  }
+
   const param = window.location.search.split(/=/);
   const id = param.length === 2 ? param[1] : '';
   handleEvent();
-  const addImageLoadEvent = addClassLoadEvent();
-  loadAnimeFrames(addImageLoadEvent); // initially load the frame images
-
+  
   if (MENU_NAMES.every(name => id !== name)) {
     document.title = 'Anthony Photography';
     history.pushState({ page: 'home' }, '', '');
@@ -362,6 +416,10 @@ const main = () => {
   } else {
     renderMain(id);
   }
+  
+  const addImageLoadEvent = addClassLoadEvent();
+  // initially load the frame images
+  setTimeout(() => loadAnimeFrames(addImageLoadEvent), 200);
 }
 
 main();

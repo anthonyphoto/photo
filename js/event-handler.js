@@ -79,6 +79,7 @@ const initAnime = () => {
 const initTopPic = () => {
   const SCROLLS_PER_FRAME = 1.2;  // the larger the slower
   let i = 0;
+  let prevTop = 1000; // large value to be out of bound
   let screenWidth = getWidth();
   let screenHeight = getHeight();
   let frameEl = document.getElementById('js-frame-e-wr');
@@ -92,6 +93,7 @@ const initTopPic = () => {
     }
     screenWidth = getWidth();
     screenHeight = getHeight();
+
       // in case baseTop is not defined
     if (baseTop < 5) {
       baseTop = frameEl?.getBoundingClientRect()?.top;
@@ -108,17 +110,32 @@ const initTopPic = () => {
     const rect = frameEl?.getBoundingClientRect();
 
     if (rect.top >= 0 && rect.top < screenHeight) {
+      const top = rect.top;
       const scrollAmount = baseTop - rect.top;
+
+      const threshold = screenHeight * 0.4;
+      // console.log("--top", top, prevTop, screenHeight);
+      
+      // going upward
+      if (top <= threshold && prevTop >= threshold) {
+        imgEl.style.animation = 'moveRight 1.5s linear forwards';
+      } else if (top >= threshold && prevTop <= threshold) {
+        imgEl.style.animation = 'moveLeft 1.5s linear';
+      } 
+      prevTop = top;
+    
+      /* OLD CODE - JS Anime effect */
+      /*
       let newInd = parseInt(scrollAmount/SCROLLS_PER_FRAME); // add -30 value for bottom space
       if (newInd < 0) newInd = 0;
       if (newInd > maxLeft) newInd = maxLeft;
       newInd *= -1;
 
       if (newInd !== i) {
-        console.log("--i:", newInd, i, scrollAmount, rect.top, maxLeft)
         imgEl.style.left = `${newInd}px`;
         i = newInd;
       } 
+      */
     }
   }
 }
@@ -174,8 +191,6 @@ const addScrollEvent = () => {
   window.addEventListener('scroll', throttledHandleScroll);
 
   window.onload = () => {
-    console.log("AK", 6)
-
     window.scrollTo({ top: 0, behavior: 'smooth' });
     revealContentOnScroll();
   };
@@ -198,7 +213,7 @@ const addClassLoadEvent = () => {
     const handleClassLoad = () => {
       if (++loadedCnt === len) {
         FRAMES_LOADED = true;
-        // console.log("AK: Frames loaded")
+        console.log("AK: Frames loaded")
         removeClassLoadEvent();  
       }
     }
