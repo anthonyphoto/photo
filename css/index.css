@@ -248,7 +248,6 @@ main {
 }
 
 .frame {
-  /* width: 100%; */
   height: 300px;
   position: absolute;
   left: 50%;
@@ -263,7 +262,6 @@ main {
   max-width: var(--max-width);
   margin-left: auto;
   margin-right: auto;
-  /* height: 787px; */
   height: 550px;
   background-color: #FFF;
 }
@@ -271,8 +269,7 @@ main {
 .frame-wide {
   width: 100%;
   max-width: var(--max-width);
-  /* height: 500px; */
-  height: 787px;
+  height: calc(810000 / var(--max-width)); 
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -342,11 +339,43 @@ main {
   background-color: #FFF;
 }
 
-.btn-gallery {
+.btn-wr {
   position: fixed;
   bottom: 4%;
   left: 50%;
   transform: translateX(-50%);
+  display: flex;
+}
+
+.btn-gallery {
+  margin: 0 0.5rem;
+  white-space: nowrap;
+  /* position: fixed;
+  bottom: 4%;
+  left: 50%;
+  transform: translateX(-50%); */
+}
+
+.btn-trans {
+  background-color: transparent;
+  border: none;
+  color: #FFF;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.btn-forward {
+  margin-left: -0.5rem;
+  margin-right: 0.5rem;
+}
+
+.audio-visual {
+  width: 7rem;
+  height: 1.9rem;
+  margin-bottom: 0.4rem;
+  margin-right: 0.7rem;
+  cursor: pointer;
+
 }
 
 .copyright {

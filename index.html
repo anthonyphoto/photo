@@ -23,15 +23,42 @@
   </head>
   <body>
     <header role='banner' id='js-slide-show' class='slide-show-wr'>
+      <audio
+        controls hidden
+        id='js-audio'
+        src="./media/grad.m4a">
+        Your browser does not support the audio element.
+      </audio>
       <img id='js-logo' class='intro' src='./img/logo-l.png' />
       <a href="./index.html">
         <img id='js-logo-top' class='logo-top fi' src='./img/logo-s.png' />
       </a>
       <img id='js-img-0' class='slide-show' />
       <img id='js-img-1' class='slide-show' />
-      <div id='js-btn-gallery-wr' class='fi hidden'>
+      <div id='js-btn-gallery-wr' class='fi hidden btn-wr'>
+        <div id='js-audio-control' class='hidden flex fi'>
+          <canvas id="js-visualizer" onclick='stopMusic();' class='audio-visual'></canvas>          
+          <div class='flex'>
+            <!-- <button id='js-stop' type="submit" onclick='stopMusic()' class='btn-trans'>
+              <i class="fa fa-stop-circle-o" style="font-size:2.2rem;color:#c00000;"></i>
+            </button>  -->
+            <button id='js-play' type="submit" onclick='playMusic()' class='btn-trans hidden'>
+              <i class="fa fa-play" style="font-size:1.4rem;"></i>
+            </button> 
+            &nbsp;&nbsp;&nbsp;
+            <button type="submit" onclick="playNext()" class='btn-trans btn-forward'>
+              <i class="fa fa-fast-forward" style="font-size:1.3rem;"></i>
+            </button>
+          </div>
+
+        </div>
+
+
+        <button id='js-btn-slide' type="submit" onclick="handlePlaySlideShow()" class="btn-black fi-short btn-gallery">
+          <i class="fa fa-film fa-spin" style="font-size:1rem;"></i>&nbsp; Slide Show
+        </button>
         <button id='js-btn-gallery' type="submit" onclick="handleOpenMenu()" class="btn-black fi-short btn-gallery">
-          <i class="fa fa-film fa-spin" style="font-size:1.1rem;"></i>&nbsp; PORTFOLIO
+          <i class="fa fa-bars" style="font-size:1rem;"></i>&nbsp; Menu
         </button>
       </div>
     </header>

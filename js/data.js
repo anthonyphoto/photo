@@ -5,11 +5,13 @@
  * portrait 4x5: 960 * 1200px
  * weight -100 ~ +100
  */
+const SLIDE_LANDING = './img/t_mj';
+
 const SLIDE_LIST = [
-  {
-    src: './img/t_mj',
-    weight: 0,    
-  },
+  // {
+  //   src: './img/t_mj',
+  //   weight: 0,    
+  // },
   {
     src: './img/m1',
     weight: 0,    
@@ -122,7 +124,7 @@ const PORTRAITS_LIB = [
   },
   {
     src: './img/p_class',
-    mode: 0,
+    mode: 1,
     title: '',
   },
 
@@ -239,3 +241,37 @@ const OTHERS_LIB = [
   //   // title: 'Golden Gate Bridge',
   // },
 ];
+
+const SONG_LIST = [
+  {
+    owner: 'Anthony',
+    title: 'One Republic - Good Life',
+    path: './media/goodlife.m4a',
+    weight: 0,
+  }, 
+  {
+    owner: 'Anthony',
+    title: 'Limahl - Never Ending Story',
+    path: './media/neverending.m4a',
+    weight: 0,
+  }, 
+  {
+    owner: 'Anthony',
+    title: 'Kina Grannis - Can\'t Help Falling In Love',
+    path: './media/song-fallin.m4a',
+    weight: 10,
+  }, 
+  {
+    owner: 'Anthony',
+    title: 'UP - Married Life',
+    path: './media/up.mp3',
+    weight: 10,
+  }, 
+  // {
+  //   owner: 'Anthony',
+  //   title: 'Si Tu Vois Ma Mère – Tatiana Eva-Marie & Avalon Jazz Band',
+  //   path: './media/situ.mp3',
+  //   weight: 10,
+  // }, 
+];
+let SONG_TRACK = 0;

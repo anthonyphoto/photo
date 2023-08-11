@@ -1,14 +1,26 @@
 'use strict';
 
-
 const handleOpenMenu = () => {
   SHOULD_STOP_SHOW = true;
   const mainEl = document.getElementById('js-main');
   mainEl.style.display = 'block';
   renderCatchPhrase('portraits');
   updateCatchMobile();
-
   scrollMain(mainEl);
+}
+
+const handlePlaySlideShow = () => {
+  const logoElem = document.getElementById('js-logo');
+  fadeOutIntro(logoElem, 1);
+  document.getElementById('js-audio').play();
+  displayAudioEffect();
+
+  setTimeout(() => {
+    document.getElementById('js-btn-slide').style.display = 'none';
+    document.getElementById('js-audio-control').style.display = 'flex';
+    // displayAudioEffect();
+    playSlideShow(0, false);
+  }, 1000);
 }
 
 // This event is triggered occasionally from phone
@@ -101,8 +113,9 @@ const initTopPic = () => {
 
     const imgEl = document.getElementById('js-frame-e');
 
-    // suppress if image hight is enlarged to fit screen width
-    if (imgEl.height > 400) {
+    // suppress if image height is enlarged to fit screen width
+    if (imgEl && imgEl.style.height > '400px') {
+      console.log("AK: height supprss", imgEl?.style.height)
       return;
     }
 
@@ -227,7 +240,85 @@ const addClassLoadEvent = () => {
   }
 }
 
+const stopMusic = () => {
+  document.getElementById('js-audio').pause();
+  // document.getElementById('js-stop').style.display = 'none';
+  document.getElementById('js-play').style.display = 'block';
+}
+const playMusic = () => {
+  document.getElementById('js-audio').play();
+  document.getElementById('js-play').style.display = 'none';
+  // document.getElementById('js-stop').style.display = 'block';
+}
+
+function playNext() {
+  const audioEl = document.getElementById('js-audio');
+  if (++SONG_TRACK === SONG_LIST.length) SONG_TRACK = 0;
+  audioEl.src = SONG_LIST[SONG_TRACK].path;
+  audioEl.play();
+}
+
+const displayAudioEffect = () => {
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const analyser = audioContext.createAnalyser();
+  const canvas = document.getElementById('js-visualizer');
+  const canvasContext = canvas.getContext('2d');
+
+  // Connect the audio source to the analyser node
+  const audioElement = document.getElementById('js-audio');
+  const audioSource = audioContext.createMediaElementSource(audioElement);
+  audioSource.connect(analyser);
+  analyser.connect(audioContext.destination);
+
+  // Set up the analyser node
+  analyser.fftSize = 256;
+  const bufferLength = analyser.frequencyBinCount;
+  const dataArray = new Uint8Array(bufferLength);
+
+  // Draw the js-visualizer
+  function draw() {
+    analyser.getByteFrequencyData(dataArray);
+    
+    canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+    
+    const barWidth = (canvas.width / bufferLength) * 2.5 * 3;
+    let x = 0;    
+    for (let i = 0; i < bufferLength; i += 3) {
+      const barHeight = dataArray[i];
+
+      canvasContext.fillStyle = 'rgb(255, 255, 255, 0.1)';
+      canvasContext.fillRect(x, canvas.height - barHeight / 2, barWidth, barHeight / 2);
+      canvasContext.fillStyle = 'rgb(' + (barHeight + 100) + ',50,50, 0.7)';
+      canvasContext.fillRect(x, canvas.height - barHeight / 2, barWidth, 15);
+      
+      x += barWidth + 1;
+    }
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+}
+
+
+const addAudioListener = () => {
+  SONG_LIST.sort((a, b) => {
+    const aRand = Math.random() + a.weight/100;
+    const bRand = Math.random() + b.weight/100;
+    return bRand - aRand;
+  });
+
+  const audioEl = document.getElementById('js-audio');
+  audioEl.src = SONG_LIST[SONG_TRACK].path;
+  
+  audioEl.addEventListener('ended', () => {
+    if (++SONG_TRACK === SONG_LIST.length) SONG_TRACK = 0;
+    audioEl.src = SONG_LIST[SONG_TRACK].path;
+    audioEl.play();
+  });
+}
+
 const handleEvent = () => {
   window.addEventListener('resize', debounce(handleResize, 500));
   window.addEventListener('popstate', handlePopState);
+  addAudioListener();
 }

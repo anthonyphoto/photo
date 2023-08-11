@@ -19,6 +19,8 @@ const resumeSlideShow = () => {
   document.getElementById('js-slide-show').style.opacity = 1;
   document.title = 'Anthony Photography';
   history.replaceState({ page: 'home' }, '', './index.html');
+  playMusic();
+
   renderLanding(SHOULD_STOP_SHOW);
 }
 
@@ -137,24 +139,6 @@ const renderMain = (page = 'portraits') => {
     el.style.color = el.id === `js-${page}` ? '#c00000' : '#2a2c2d';
   });
 
-  // top image for portraits menu only
-  /*
-  const topEl = document.getElementById('js-top-portrait');
-  if (page === 'portraits') {
-    const pic = {
-      src: './img/p_michael',
-      mode: 0,
-      title: '',
-    };
-    topEl.style.display = 'block';
-    topEl.innerHTML = '';
-    topEl.appendChild(getPicHtml(pic, true));
-    topEl.style.paddingBottom = '1rem';
-  } else {
-    topEl.style.display = 'none';
-  }
-  */
-
   // main frame setting
   const frame1 = document.getElementById('js-frame-wr');
   const frame2 = document.getElementById('js-frame-e-wr');
@@ -228,6 +212,8 @@ const renderMain = (page = 'portraits') => {
 
 const scrollMain = (el, top=100, bounce=9, delta = -1) => {
   if (top < 0 && bounce < 0) {
+    stopMusic();
+    // document.getElementById('js-audio').pause();
     renderMain();
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -264,16 +250,18 @@ const playSlideShow = (slideInd, isFirst, toggleId = 0) => {
   }
   SHOW_RUNNING = true;
 
+
   const duration = isFirst ? 8000 : 5000;
   const imgElement = document.getElementById(`js-img-${toggleId}`);
   imgElement.style.opacity = 0;
 
-  const imgSrc = SLIDE_LIST[slideInd].src;
-  // const imgSrc = isFirst ? SLIDE_LANDING : SLIDE_LIST[slideInd].src;
+  // const imgSrc = SLIDE_LIST[slideInd].src;
+  const imgSrc = isFirst ? SLIDE_LANDING : SLIDE_LIST[slideInd].src;
   imgElement.src = `${imgSrc}${IS_LANDSCAPE ? 'w' : ''}.jpg`;
   imgElement.style.zIndex = -1;
   if (isFirst){
     imgElement.style.opacity = 1;
+    return;
   } else {
     fadeIn(imgElement);
   }
@@ -290,7 +278,7 @@ const fadeOutIntro = (el, opacity) => {
     document.getElementById('js-logo-top').style.display = 'block';
     el.style.display = 'none';
 
- // document.getElementById('js-btn-gallery-wr').style.display = 'block';
+ // document.getElementById('js-btn-gallery-wr').style.display = 'flex';
     return;
   }
   setTimeout(() => {
@@ -301,10 +289,11 @@ const fadeOutIntro = (el, opacity) => {
 
 const shrink = (el, width, logoWidth, logoHeight, screenWidth, screenHeight, finalWidth) => {
   if (width < finalWidth) {
-    return setTimeout(() => {
-      fadeOutIntro(el, 1);      
-      return;
-    }, 3000)
+    return;
+    // return setTimeout(() => {
+    //   fadeOutIntro(el, 1);      
+    //   return;
+    // }, 3000)
   }
 
   el.style.width = `${width}px`;
@@ -314,7 +303,8 @@ const shrink = (el, width, logoWidth, logoHeight, screenWidth, screenHeight, fin
   el.style.left = `${screenWidth/2 - width/2 - 12}px`;
   el.style.top = `${screenHeight/2 - height/2 - 128}px`;
   
-  const delta = width > screenWidth * 1.5 ? width / screenWidth * 4 : 2;
+  let delta = width > screenWidth * 1.5 ? width / screenWidth * 4 : 2;
+  if (IS_LANDSCAPE) delta *= 5;
 
   setTimeout(() => {
     shrink(el, width - delta, logoWidth, logoHeight, screenWidth, screenHeight, finalWidth);
@@ -322,10 +312,10 @@ const shrink = (el, width, logoWidth, logoHeight, screenWidth, screenHeight, fin
 }
 
 const scrollLogo = (el, left, finalLeft) => {
-  const scrollSpeed = IS_LANDSCAPE ? 1.5 : 5;
+  const scrollSpeed = IS_LANDSCAPE ? 9 : 5;
   return new Promise(resolve => {
     if (left <= finalLeft) {
-      document.getElementById('js-btn-gallery-wr').style.display = 'block';
+      document.getElementById('js-btn-gallery-wr').style.display = 'flex';
       return resolve();
     }
     setTimeout(() => {
@@ -339,7 +329,7 @@ const scrollLogo = (el, left, finalLeft) => {
 const displayIntro = async () => {
   const logoElem = document.getElementById('js-logo');
   logoElem.style.display = 'block';
-  // Hardcoded to fix racing condition issue
+  // hardcoded to fix racing condition issue
   const logoWidth = 15800;
   const logoHeight = 1826;
   // const logoWidth = logoElem.naturalWidth;  // 15800px
@@ -348,16 +338,16 @@ const displayIntro = async () => {
   const screenWidth = getWidth();
   const screenHeight = getHeight();
 
-  const finalWidth = IS_LANDSCAPE ? screenWidth * 0.8 : screenWidth * 0.96;
+  const finalWidth = IS_LANDSCAPE ? screenWidth * 0.7 : screenWidth * 0.87;
   // width & height have value to resize
-  let width = IS_LANDSCAPE ? screenHeight * 20 : screenWidth * 300;
+  let width = IS_LANDSCAPE ? screenHeight * 140 : screenWidth * 300;
   let height = logoHeight * width / logoWidth;
   const finalLeft = screenWidth/2 - width/2;
   logoElem.style.width = `${width}px`;
   logoElem.style.left = `0px`;
   logoElem.style.top = `${screenHeight/2 - height*0.5}px`;
   
-  await scrollLogo(logoElem, finalLeft * (IS_LANDSCAPE ? 0.93 : 0.98), finalLeft);
+  await scrollLogo(logoElem, finalLeft * (IS_LANDSCAPE ? 0.97 : 0.98), finalLeft);
 
   setTimeout(() => shrink(logoElem, width, logoWidth, logoHeight, screenWidth, screenHeight, finalWidth), 100
   );
@@ -380,18 +370,16 @@ const renderLanding = (skipIntro = false) => {
   // document.getElementById('js-img-1').src = './img/m2.jpg'; // test purpose
   if (skipIntro) {
     document.getElementById('js-logo-top').style.display = 'block';
-    document.getElementById('js-btn-gallery-wr').style.display = 'block';
+    document.getElementById('js-btn-gallery-wr').style.display = 'flex';
   } else {
     displayIntro();
   }
 
   // set the first image during intro
-  const startImage = './img/t_mj';
   // const startImage = Math.random() > 0.5 ? './img/t_mj' : './img/m9';
-  const slideInd = skipIntro ? 0 : SLIDE_LIST.findIndex(slide => slide.src === startImage);
-
+  // const slideInd = skipIntro ? 0 : SLIDE_LIST.findIndex(slide => slide.src === startImage);
   if (!SHOW_RUNNING) {
-    playSlideShow(slideInd, !skipIntro);
+    playSlideShow(0, !skipIntro);
   } 
 }
 
@@ -419,7 +407,7 @@ const main = () => {
   
   const addImageLoadEvent = addClassLoadEvent();
   // initially load the frame images
-  setTimeout(() => loadAnimeFrames(addImageLoadEvent), 200);
+  setTimeout(() => loadAnimeFrames(addImageLoadEvent), 100);
 }
 
 main();
